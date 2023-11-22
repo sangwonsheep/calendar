@@ -1,5 +1,7 @@
 package calender;
 
+import java.util.Scanner;
+
 public class Calendar {
 
 	public static void main(String[] args) {
@@ -15,6 +17,14 @@ public class Calendar {
 			}
 			System.out.println();
 		}
+		
+		Scanner input = new Scanner(System.in);
+		int[] month = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		System.out.println("달을 입력하세요");
+		int n = input.nextInt();
+		System.out.println(n + "월은 " + month[n-1] + "일까지 있습니다.");
+		
+		input.close();
 	}
 
 }
