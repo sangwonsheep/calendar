@@ -4,7 +4,13 @@ import java.util.Scanner;
 
 public class Calendar {
 
-	public static void main(String[] args) {
+	private final int[] MAX_DAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+	public int maxDaysOfMonth(int month) {
+		return MAX_DAYS[month-1];
+	}
+
+	public void printCalendar() {
 		System.out.println("일 월 화 수 목 금 토");
 		System.out.println("----------------");
 		int count = 1;
@@ -17,14 +23,26 @@ public class Calendar {
 			}
 			System.out.println();
 		}
-		
+	}
+
+	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
-		int[] month = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-		System.out.println("달을 입력하세요");
-		int n = input.nextInt();
-		System.out.println(n + "월은 " + month[n-1] + "일까지 있습니다.");
-		
-		input.close();
+		Calendar cal = new Calendar();
+		String PROMPT = "> ";
+
+		while(true) {
+			System.out.println("월을 입력하세요");
+			System.out.print(PROMPT);
+			int n = input.nextInt();
+			if(n == -1) {
+				System.out.println("Have a nice day!");
+				break;
+			}
+			if(n > 12)
+				continue;
+			System.out.println(n + "월은 " + cal.maxDaysOfMonth(n) + "일까지 있습니다.");
+		}
+
 	}
 
 }
