@@ -12,6 +12,8 @@ public class Sum {
 		int a = input.nextInt();
 		int b = input.nextInt();
 		System.out.println("두 수의 합은 " + (a+b) + "입니다.");
+		
+		input.close();
 	}
 
 }

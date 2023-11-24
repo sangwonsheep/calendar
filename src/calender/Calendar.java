@@ -1,21 +1,9 @@
 package calender;
 
-import java.util.Scanner;
-
 public class Calendar {
 
-	private final int[] MAX_DAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	private final int[] LEAP_MAX_DAYS = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	private final String[] WEEK_DAYS = {"SU", "MO", "TU", "WE", "TH", "FR", "SA"};
-
-	public int parseDay(String weekday) {
-		for(int i = 0; i < WEEK_DAYS.length; i++) {
-			if(WEEK_DAYS[i].equals(weekday)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+	private final int[] MAX_DAYS = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	private final int[] LEAP_MAX_DAYS = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 	
 	public boolean isLeapYear(int year) {
 		if(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
@@ -25,23 +13,75 @@ public class Calendar {
 	
 	public int maxDaysOfMonth(int year, int month) {
 		if(isLeapYear(year))
-			return LEAP_MAX_DAYS[month-1];
+			return LEAP_MAX_DAYS[month];
 		else
-			return MAX_DAYS[month-1];
+			return MAX_DAYS[month];
+	}
+	
+	/**
+	 *	실제 달력을 출력하기 위해 계산하는 부분
+	 *	1년 1월 1일 월요일을 기준으로 하였다.
+	 */
+	public int checkCalendar(int year, int month) {
+		int y = year - 1; // 예를 들어 2023년이면 1년~2022년까지 구하기 위함
+		int plusDay = 1; // 1년 1월 1일 월요일 기준으로 설정
+		int dayOfLeapYear = (y/4) + (y/400) - (y/100); // 윤년 개수 구하기 
+		
+		int leap = y + dayOfLeapYear + plusDay; 
+		leap += sumMonth(year, month); 
+		return leap % 7;
+	}
+	
+	/**
+	 * 그레고리력으로 인정된 날부터 실제 달력 출력
+	 * 1583년 1월 1일 토요일 기준
+	 */
+	public int gregorian(int year, int month) {
+		int y = 1583; // 1583년
+		int plusDay = 6; // 토요일
+		
+		int count = 0;
+		for(int i = y; i < year; i++) {
+			int check = isLeapYear(i) ? 366: 365;
+			count += check;
+		}
+		
+		count += sumMonth(year, month);
+		
+		int weekday = (count + plusDay) % 7;
+		return weekday;
 	}
 
-	public void printCalendar(int year, int month, String weekday) {
+	/**
+	 * 실제 달력의 월을 구하기 위한 함수 
+	 */
+	public int sumMonth(int year, int month) {
+		int sum = 0;
+		if(isLeapYear(year)) {
+			for(int i = 1; i < month; i++) {
+				sum += LEAP_MAX_DAYS[i];
+			}
+		}
+		else {
+			for(int i = 1; i < month; i++) {
+				sum += MAX_DAYS[i];
+			}
+		}
+		return sum;
+	}
+
+	public void printCalendar(int year, int month) {
 		System.out.printf("    <<%4d년%3d월>>\n", year, month);
 		System.out.println(" SU MO TU WE TH FR SA");
 		System.out.println("----------------------");
 		
 		int n;
-		int check = parseDay(weekday);	
+		int check = gregorian(year, month); 
 		
 		if(isLeapYear(year))
-			n = LEAP_MAX_DAYS[month-1];
+			n = LEAP_MAX_DAYS[month];
 		else
-			n = MAX_DAYS[month-1];
+			n = MAX_DAYS[month];
 		
 		for(int i = 0; i < check; i++) {
 			System.out.print("   ");
@@ -53,48 +93,9 @@ public class Calendar {
 				System.out.println();
 		}
 	}
-	
-	public void runPrompt() {
-		Scanner input = new Scanner(System.in);
-		Calendar cal = new Calendar();
-		String PROMPT = "> ";
-		
-		int year = 0;
-		int month = 0;
-		String weekday = "";
-
-		while(true) {
-			System.out.println("년도을 입력하세요. (EXIT : -1)");
-			System.out.print("YEAR" + PROMPT);
-			year = input.nextInt();
-			if(year == -1) {
-				System.out.println("Bye~");
-				break;
-			}
-			
-			System.out.println("월을 입력하세요");
-			System.out.print("MONTH" + PROMPT);
-			month = input.nextInt();
-			System.out.println("첫번째 요일을 입력하세요. (SU, MO, TU, WE, TH, FR, SA)");
-			System.out.print("WEEKDAY" + PROMPT);
-			weekday = input.next();
-			
-			if(month == -1) {
-				System.out.println("Bye~");
-				break;
-			}
-			if(month > 12 || month < 0)
-				continue;
-			cal.printCalendar(year, month, weekday);
-			System.out.println();
-		}
-		
-		input.close();
-	}
 
 	public static void main(String[] args) {
-		Calendar cal = new Calendar();
-		cal.runPrompt();
+		
 	}
 
 }
