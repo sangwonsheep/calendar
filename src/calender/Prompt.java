@@ -1,5 +1,7 @@
 package calender;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +11,28 @@ import java.util.Scanner;
 public class Prompt {
 	
 	public final String PROMPT = "> ";
+	
+	private static final String SAVE_FILE = "calendar.dat";
+	
+	public int parseDay(String week) {
+		switch(week) {
+			case "su" :
+				return 0;
+			case "mo" :
+				return 1;
+			case "tu" :
+				return 2;
+			case "we" :
+				return 3;
+			case "th" :
+				return 4;
+			case "fr" :
+				return 5;
+			case "sa" :
+				return 6;
+		}
+		return -1;
+	}
 	
 	public void printMenu() {
 		System.out.println("+----------------------+");
@@ -62,6 +86,15 @@ public class Prompt {
 		
 		System.out.println("일정이 등록되었습니다.");
 		map.put(date, list);
+		
+		File f = new File(SAVE_FILE);
+		try {
+			FileWriter fw = new FileWriter(f, true);
+			fw.write("ok\n");
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void cmdSearch(Scanner input, HashMap <String, ArrayList<String>> map) {
